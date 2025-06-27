@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useReducer, useState } from "react";
-import type { FilterValue, ListOfTodos, TitleTodo, TodoId } from "../types";
+import type { FilterValue, ListOfTodos, TitleTodo, Todo, TodoId } from "../types";
 import { todoReducer } from "../reducers/todoReducer";
 import { TODO_ACTIONS, TODO_FILTERS } from "../consts";
+
 
 interface Props {
     filteredTodos: ListOfTodos;
@@ -13,6 +14,8 @@ interface Props {
     filterSelected: FilterValue;
     activeCount: number;
     completedCount: number;
+    selectedTodo: Todo | null;
+    handleSelectTodo: (todo: Todo | null) => void;
 
 }
 
@@ -28,6 +31,7 @@ export const useTodo = (): Props => {
 
 
     const [filterSelected, setFilterSelected] = useState<FilterValue>(TODO_FILTERS.ALL)
+    const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
 
     const filteredTodos = useMemo(() => {
         switch (filterSelected) {
@@ -78,9 +82,13 @@ export const useTodo = (): Props => {
         dispatch(action);
     }
 
+    const handleSelectTodo = (todo: Todo | null ): void => {
+        setSelectedTodo(todo);
+    }
+
  
 
-     const activeCount = todos.filter(todo => !todo.completed).length
+    const activeCount = todos.filter(todo => !todo.completed).length
     const completedCount = todos.length - activeCount
 
     return {
@@ -92,7 +100,9 @@ export const useTodo = (): Props => {
         handleFilterChange,
         filterSelected,
         activeCount,
-        completedCount  
+        completedCount,
+        selectedTodo,
+        handleSelectTodo
     };
 
 }
